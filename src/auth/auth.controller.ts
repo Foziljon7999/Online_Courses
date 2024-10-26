@@ -31,19 +31,9 @@ export class AuthController {
   async refreshAccessToken(@Body() body: { refreshToken: string }) {
     return this.authService.refreshAccessToken(body.refreshToken);
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @Post('logout')
+  async logout(@Req() request: Request) {
+    return this.authService.logout(request.user.id);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
+  
 }
