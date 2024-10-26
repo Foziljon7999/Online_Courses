@@ -7,6 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { CoursesModule } from './courses/courses.module';
+import { Course } from './courses/entities/course.entity';
+
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { CoursesModule } from './courses/courses.module';
       username: 'postgres',
       password: '1111',
       database: 'exam',
-      entities: [User],
+      entities: [User, Course],
       synchronize: true,
       // logging: true
     }),
