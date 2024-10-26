@@ -1,26 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateModuleDto } from './dto/create-module.dto';
 import { UpdateModuleDto } from './dto/update-module.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Modules } from './entities/module.entity';
+import { Repository } from 'typeorm';
+import { Course } from 'src/courses/entities/course.entity';
 
 @Injectable()
 export class ModuleService {
-  create(createModuleDto: CreateModuleDto) {
-    return 'This action adds a new module';
+  constructor(
+    @InjectRepository(Modules)
+    private readonly moduleRepository: Repository<Modules>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
+  ) {}
+
+  async create(createModuleDto: CreateModuleDto): Promise<Modules> {
+    const course = await this.courseRepository.findOneBy({ id: createModuleDto.courseId });
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${createModuleDto.courseId} not found`);
+    }
+    
+    const module = this.moduleRepository.create({
+      ...createModuleDto,
+      course,
+    });
+
+    return this.moduleRepository.save(module);
   }
 
-  findAll() {
-    return `This action returns all module`;
+  async findAll(): Promise<Modules[]> {
+    return this.moduleRepository.find({ relations: ['course', 'lessons'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} module`;
+  async findOne(id: number): Promise<Modules> {
+    const module = await this.moduleRepository.findOne({
+      where: { id },
+      relations: ['course', 'lessons'],
+    });
+    if (!module) {
+      throw new NotFoundException(`Module with ID ${id} not found`);
+    }
+    return module;
   }
 
-  update(id: number, updateModuleDto: UpdateModuleDto) {
-    return `This action updates a #${id} module`;
+  async update(id: number, updateModuleDto: UpdateModuleDto): Promise<Modules> {
+    const module = await this.moduleRepository.findOneBy({ id });
+    if (!module) {
+      throw new NotFoundException(`Module with ID ${id} not found`);
+    }
+    
+    if (updateModuleDto.courseId) {
+      const course = await this.courseRepository.findOneBy({ id: updateModuleDto.courseId });
+      if (!course) {
+        throw new NotFoundException(`Course with ID ${updateModuleDto.courseId} not found`);
+      }
+      module.course = course;
+    }
+
+    Object.assign(module, updateModuleDto);
+    return this.moduleRepository.save(module);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} module`;
+  async remove(id: number): Promise<void> {
+    const module = await this.findOne(id);
+    await this.moduleRepository.remove(module);
   }
 }
