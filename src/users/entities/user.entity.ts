@@ -1,4 +1,5 @@
 import { Enrollment } from "src/enrollment/entities/enrollment.entity";
+import { Result } from "src/results/entities/result.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('users')
@@ -29,4 +30,7 @@ export class User {
 
   @OneToMany(() => Enrollment, enrollment => enrollment.user)
   enrollments: Enrollment[];
+
+  @OneToMany(() => Result, (result) => result.user)
+  results: Result[];
 }

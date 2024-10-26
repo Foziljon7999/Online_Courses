@@ -14,6 +14,10 @@ import { LessonModule } from './lesson/lesson.module';
 import { Lesson } from './lesson/entities/lesson.entity';
 import { Modules } from './module/entities/module.entity';
 import { ModulesModule } from './module/module.module';
+import { AssignmentModule } from './assignment/assignment.module';
+import { Assignment } from './assignment/entities/assignment.entity';
+import { ResultsModule } from './results/results.module';
+import { Result } from './results/entities/result.entity';
 
 
 
@@ -30,7 +34,7 @@ import { ModulesModule } from './module/module.module';
       username: 'postgres',
       password: '1111',
       database: 'exam',
-      entities: [User, Course, Enrollment, Lesson, Modules],
+      entities: [User, Course, Enrollment, Lesson, Modules, Assignment, Result],
       synchronize: true,
       // logging: true
     }),
@@ -39,7 +43,9 @@ import { ModulesModule } from './module/module.module';
     CoursesModule,
     EnrollmentModule,
     LessonModule,
-    ModulesModule
+    ModulesModule,
+    AssignmentModule,
+    ResultsModule
   ],
   controllers: [AppController],
   providers: [AppService],
