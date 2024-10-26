@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Lesson } from './entities/lesson.entity';
+import { Repository } from 'typeorm';
+import { Modules } from 'src/module/entities/module.entity';
 
 @Injectable()
 export class LessonService {
-  create(createLessonDto: CreateLessonDto) {
-    return 'This action adds a new lesson';
+  constructor(
+    @InjectRepository(Lesson)
+    private lessonRepository: Repository<Lesson>,
+    @InjectRepository(Modules)
+    private moduleRepository: Repository<Modules>
+  ) {}
+
+  async create(createLessonDto: CreateLessonDto): Promise<Lesson> {
+    const moduleExists = await this.moduleRepository.findOne({
+      where: { id: createLessonDto.moduleId },
+    });
+
+    if (!moduleExists) {
+      throw new NotFoundException(`Module with ID ${createLessonDto.moduleId} not found`);
+    }
+    const lesson = this.lessonRepository.create(createLessonDto)
+    return this.lessonRepository.save(lesson);
   }
 
-  findAll() {
-    return `This action returns all lesson`;
+  async findAll(): Promise<Lesson[]> {
+    return this.lessonRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} lesson`;
+  async findOne(id: number): Promise<Lesson> {
+    const lesson = await this.lessonRepository.findOne({ where: { id } });
+    if (!lesson) {
+      throw new NotFoundException(`Lesson with ID ${id} not found`);
+    }
+    return lesson;
   }
 
-  update(id: number, updateLessonDto: UpdateLessonDto) {
-    return `This action updates a #${id} lesson`;
+  async update(id: number, updateLessonDto: UpdateLessonDto): Promise<Lesson> {
+    await this.findOne(id); 
+    await this.lessonRepository.update(id, updateLessonDto);
+    return this.findOne(id); 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} lesson`;
+  async remove(id: number): Promise<void> {
+    const lesson = await this.findOne(id);
+    await this.lessonRepository.remove(lesson);
   }
 }

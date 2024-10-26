@@ -13,7 +13,7 @@ export class Lesson {
   content: string;
 
   @Column()
-  contentType: 'video' | 'text'; 
+  contentType:  'text'; 
 
   @ManyToOne(() => Modules, (module) => module.lessons)
   module: Modules;
