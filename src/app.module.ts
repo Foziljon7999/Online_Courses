@@ -8,6 +8,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { CoursesModule } from './courses/courses.module';
 import { Course } from './courses/entities/course.entity';
+import { EnrollmentModule } from './enrollment/enrollment.module';
+import { Enrollment } from './enrollment/entities/enrollment.entity';
+import { ModuleModule } from './module/module.module';
 
 
 @Module({
@@ -23,13 +26,15 @@ import { Course } from './courses/entities/course.entity';
       username: 'postgres',
       password: '1111',
       database: 'exam',
-      entities: [User, Course],
+      entities: [User, Course, Enrollment],
       synchronize: true,
       // logging: true
     }),
     UsersModule,
     AuthModule,
-    CoursesModule
+    CoursesModule,
+    EnrollmentModule,
+    ModuleModule
   ],
   controllers: [AppController],
   providers: [AppService],

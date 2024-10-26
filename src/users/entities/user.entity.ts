@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Enrollment } from "src/enrollment/entities/enrollment.entity";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('users')
 export class User {
@@ -25,4 +26,7 @@ export class User {
 
    @Column({ nullable: true }) 
   refreshToken?: string;
+
+  @OneToMany(() => Enrollment, enrollment => enrollment.user)
+  enrollments: Enrollment[];
 }

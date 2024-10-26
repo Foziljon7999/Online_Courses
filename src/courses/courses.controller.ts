@@ -33,8 +33,8 @@ export class CoursesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Course> {
-    return this.coursesService.findOne(id);
+  async findOneById(@Param('id') id: number): Promise<Course> {
+    return this.coursesService.findOneById(id);
   }
 
   @UseGuards(AuthGuard, RolesGuard)

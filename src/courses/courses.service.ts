@@ -31,7 +31,7 @@ export class CoursesService {
     return await query.getMany();
   }
 
-  async findOne(id: number): Promise<Course> {
+  async findOneById(id: number): Promise<Course> {
     const course = await this.courseRepository.findOne({ where: { id } });
     if (!course) {
       throw new NotFoundException(`Course with ID ${id} not found`);
@@ -41,7 +41,7 @@ export class CoursesService {
 
   async update(id: number, updateCourseDto: Partial<CreateCourseDto>): Promise<Course> {
     await this.courseRepository.update(id, updateCourseDto);
-    return this.findOne(id);
+    return this.findOneById(id);
   }
 
   async remove(id: number): Promise<string> {
