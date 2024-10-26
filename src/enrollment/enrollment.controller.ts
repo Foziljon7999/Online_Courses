@@ -1,7 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
-import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
-import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
 import { User } from 'src/users/entities/user.entity';
 import { Course } from 'src/courses/entities/course.entity';
 import { Enrollment } from './entities/enrollment.entity';

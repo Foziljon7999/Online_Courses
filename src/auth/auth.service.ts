@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException,  UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException,  UnauthorizedException, UseGuards } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt'
 import { UsersService } from 'src/users/users.service';
+import { AuthGuard } from './auth.guard';
 
 @Injectable()
 export class AuthService {
@@ -67,8 +68,10 @@ export class AuthService {
       throw new UnauthorizedException('Yaroqsiz yoki muddati tugagan refresh token');
     }
   }
-  async logout(userId: number): Promise<{ message: string }> {
-    
+
+  async logout(token: string): Promise<{ message: string }> {
+    const payload = this.jwtService.verify(token, ) 
+    const userId = payload.id
     return { message: 'Foydalanuvchi muvaffaqiyatli chiqdi' };
   }
 }

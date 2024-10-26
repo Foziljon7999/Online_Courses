@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body,  Res, Req, UseGuards, Headers } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -31,9 +31,12 @@ export class AuthController {
   async refreshAccessToken(@Body() body: { refreshToken: string }) {
     return this.authService.refreshAccessToken(body.refreshToken);
   }
+  
+  @UseGuards(AuthGuard)
   @Post('logout')
-  async logout(@Req() request: Request) {
-    return this.authService.logout(request.user.id);
+  async logout(@Headers('authorization') authHeader: string): Promise<{ message: string }> {
+    const token = authHeader.split(' ')[1]; 
+    return this.authService.logout(token);
   }
   
 }
