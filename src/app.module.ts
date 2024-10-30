@@ -29,11 +29,11 @@ import { Result } from './results/entities/result.entity';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '1111',
-      database: 'exam',
+      host: process.env.DB_HOST || 'postgres',
+      port: +process.env.DB_PORT || 5432,
+      username: process.env.DB_USERNAME || 'postgres',
+      password: process.env.DB_PASSWORD || '1111',
+      database: process.env.DB_DATABASE || 'exam',
       entities: [User, Course, Enrollment, Lesson, Modules, Assignment, Result],
       synchronize: true,
       // logging: true
