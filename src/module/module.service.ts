@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Modules } from './entities/module.entity';
 import { Repository } from 'typeorm';
 import { Course } from 'src/courses/entities/course.entity';
+import { Lesson } from 'src/lesson/entities/lesson.entity';
 
 @Injectable()
 export class ModuleService {
@@ -16,24 +17,25 @@ export class ModuleService {
   ) {}
 
   async create(createModuleDto: CreateModuleDto): Promise<Modules> {
-    const course = await this.courseRepository.findOneBy({ id: createModuleDto.courseId });
+    const course = await this.courseRepository.findOne({ where: { id: createModuleDto.courseId } });
     if (!course) {
       throw new NotFoundException(`Course with ID ${createModuleDto.courseId} not found`);
     }
-    
+  
     const module = this.moduleRepository.create({
       ...createModuleDto,
       course,
     });
-
-    return this.moduleRepository.save(module);
+  
+    return await this.moduleRepository.save(module);
   }
+  
 
   async findAll(): Promise<Modules[]> {
     return this.moduleRepository.find({ relations: ['course', 'lessons'] });
   }
 
-  async findOne(id: number): Promise<Modules> {
+  async findOneById(id: number): Promise<Modules> {
     const module = await this.moduleRepository.findOne({
       where: { id },
       relations: ['course', 'lessons'],
@@ -63,7 +65,20 @@ export class ModuleService {
   }
 
   async remove(id: number): Promise<void> {
-    const module = await this.findOne(id);
+    const module = await this.findOneById(id);
     await this.moduleRepository.remove(module);
+  }
+
+  async getModuleWithLessons(moduleId: number): Promise<Modules> {
+    const module = await this.moduleRepository.findOne({
+      where: { id: moduleId },
+      relations: ['lesson'], 
+    });
+
+    if (!module) {
+      throw new NotFoundException('Module not found');
+    }
+
+    return module;
   }
 }

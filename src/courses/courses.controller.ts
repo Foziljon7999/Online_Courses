@@ -5,10 +5,13 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course } from './entities/course.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { ModuleService } from 'src/module/module.service';
 
 @Controller('courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  constructor(private readonly coursesService: CoursesService,
+    private readonly modulesService:  ModuleService
+  ) {}
   
   @UseGuards(AuthGuard, RolesGuard)
   @Post()
@@ -47,5 +50,10 @@ export class CoursesController {
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<string> {
     return this.coursesService.remove(id);
+  }
+
+  @Get(':courseId/modules')
+  async getModulesByCourseId(@Param('courseId') courseId: number) {
+    return this.coursesService.getModulesByCourseId(courseId);
   }
 }

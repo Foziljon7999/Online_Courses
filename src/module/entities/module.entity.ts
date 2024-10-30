@@ -19,8 +19,9 @@ export class Modules {
   description: string;
 
   @OneToMany(() => Lesson, (lesson) => lesson.module)
-  lessons: Lesson[];
+  lesson: Lesson[];
 
   @OneToMany(() => Assignment, (assignment) => assignment.module)
   assignments: Assignment[];
+
 }

@@ -22,8 +22,8 @@ export class ModuleController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Modules> {
-    return this.moduleService.findOne(id);
+  async findOneById(@Param('id') id: number): Promise<Modules> {
+    return this.moduleService.findOneById(id);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -40,4 +40,13 @@ export class ModuleController {
   async remove(@Param('id') id: number): Promise<void> {
     return this.moduleService.remove(id);
   }
+
+  @UseGuards(AuthGuard)
+  @Get(':moduleId/lessons')
+  async getModuleWithLessons(
+    @Param('moduleId') moduleId: number,
+  ): Promise<Modules> {
+    return this.moduleService.getModuleWithLessons(moduleId);
+  }
+  
 }
