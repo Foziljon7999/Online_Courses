@@ -19,19 +19,22 @@ export class CoursesService {
     return this.courseRepository.save(course);
   }
 
-  async findAll(category?: string, search?: string): Promise<Course[]> {
-    const query = this.courseRepository.createQueryBuilder('course');
+  async findAll(): Promise<Course[]> {
+    return await this.courseRepository.find();
+}
 
-    if (category) {
-      query.andWhere('course.category = :category', { category });
-    }
+async findByCategory(category: string): Promise<Course[]> {
+    return await this.courseRepository.createQueryBuilder('course')
+        .where('course.category = :category', { category })
+        .getMany();
+}
 
-    if (search) {
-      query.andWhere('course.name LIKE :search', { search: `%${search}%` });
-    }
+async findBySearch(search: string): Promise<Course[]> {
+    return await this.courseRepository.createQueryBuilder('course')
+        .where('course.name LIKE :search', { search: `%${search}%` })
+        .getMany();
+}
 
-    return await query.getMany();
-  }
 
   async findOneById(id: number): Promise<Course> {
     const course = await this.courseRepository.findOne({ where: { id } });

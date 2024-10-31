@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, BadRequestException, NotFoundException } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -19,20 +19,33 @@ export class CoursesController {
     return this.coursesService.create(createCourseDto);
   }
 
+  @Get()
+  async findAll(): Promise<Course[]> {
+    return this.coursesService.findAll();
+  }
+
   @Get('filter')
   async findByCategory(@Query('category') category: string): Promise<Course[]> {
     if (!category) {
-      throw new BadRequestException('Search query cannot be empty');
-  }
-    return this.coursesService.findAll(category);
+      throw new NotFoundException('Category query parameter is required');
+    }
+    const courses = await this.coursesService.findByCategory(category);
+    if (courses.length === 0) {
+      throw new NotFoundException(`No courses found in category: ${category}`);
+    }
+    return courses;
   }
 
   @Get('search')
-  async searchByName(@Query('search') search: string): Promise<Course[]> {
+  async findBySearch(@Query('search') search: string): Promise<Course[]> {
     if (!search) {
-      throw new BadRequestException('Search query cannot be empty');
-  }
-    return this.coursesService.findAll(undefined, search);
+      throw new NotFoundException('Search query parameter is required');
+    }
+    const courses = await this.coursesService.findBySearch(search);
+    if (courses.length === 0) {
+      throw new NotFoundException(`No courses found with search term: ${search}`);
+    }
+    return courses;
   }
 
   @Get(':id')
