@@ -39,7 +39,9 @@ export class AuthService {
     const accesToken = await this.jwtService.sign(payload)
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d'})
     user.refreshToken = refreshToken;
+    user.refreshToken=undefined
     user.password=undefined
+   
     await this.userRepository.save(user)
     const { password, ...userData } = user
     return { userData, accesToken, refreshToken}
@@ -47,8 +49,11 @@ export class AuthService {
 
   async getAllMyData(payload: any) {
   const user = await this.userRepository.findOneBy({ id: payload.id})
+  user.refreshToken=undefined
+  user.password=undefined
   return user
   }
+
   async findById(id: number): Promise<User | null> {
     return this.userRepository.findOne({ where: { id } });
   }

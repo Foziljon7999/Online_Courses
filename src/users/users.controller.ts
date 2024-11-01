@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles, RolesGuard } from 'src/auth/roles.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -20,24 +21,27 @@ export class UsersController {
     return await this.usersService.createAdmin(username, email, password, role);
   }
 
-
+  @UseGuards(AuthGuard, RolesGuard)
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(): Promise<User[]> {
+    return await this.usersService.findAll();
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  async findOne(@Param('id') id: number): Promise<User> {
+    return await this.usersService.findOne(id);
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(@Param('id') id: number, @Body() updateData: Partial<User>): Promise<User> {
+    return await this.usersService.update(id, updateData);
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: number): Promise<void> {
+    return await this.usersService.remove(id);
   }
 }

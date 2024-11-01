@@ -7,11 +7,11 @@ export class Enrollment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.enrollments)
+  @ManyToOne(() => User, user => user.enrollments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Course, course => course.enrollments)
+  @ManyToOne(() => Course, course => course.enrollments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'course_id' })
   course: Course;
 }

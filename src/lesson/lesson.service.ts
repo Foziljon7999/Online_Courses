@@ -16,14 +16,20 @@ export class LessonService {
   ) {}
 
   async create(createLessonDto: CreateLessonDto): Promise<Lesson> {
-    const moduleExists = await this.moduleRepository.findOne({
+    
+    const lesson = new Lesson();
+    lesson.title = createLessonDto.title;
+    lesson.content = createLessonDto.content;
+    lesson.contentType = createLessonDto.contentType;
+    const module = await this.moduleRepository.findOne({
       where: { id: createLessonDto.moduleId },
     });
 
-    if (!moduleExists) {
+    if (!module) {
       throw new NotFoundException(`Module with ID ${createLessonDto.moduleId} not found`);
     }
-    const lesson = this.lessonRepository.create(createLessonDto)
+    lesson.module = module;
+
     return this.lessonRepository.save(lesson);
   }
 

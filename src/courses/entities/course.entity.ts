@@ -25,9 +25,9 @@ export class Course {
   @Column()
   level: string;
 
-  @OneToMany(() => Enrollment, enrollment => enrollment.course)
+  @OneToMany(() => Enrollment, enrollment => enrollment.course, { onDelete: 'CASCADE' })
   enrollments: Enrollment[];
 
-  @OneToMany(() => Modules, (module) => module.course)
+  @OneToMany(() => Modules, (module) => module.course, { onDelete: 'CASCADE' })
   modules: Modules[];
 }

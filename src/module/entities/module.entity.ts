@@ -9,7 +9,7 @@ export class Modules {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Course, (course) => course.modules)
+  @ManyToOne(() => Course, (course) => course.modules, { onDelete: 'CASCADE' })
   course: Course;
 
   @Column()
@@ -18,10 +18,10 @@ export class Modules {
   @Column()
   description: string;
 
-  @OneToMany(() => Lesson, (lesson) => lesson.module)
-  lesson: Lesson[];
+  @OneToMany(() => Lesson, (lesson) => lesson.module, { onDelete: 'CASCADE' })
+  lessons: Lesson[];
 
-  @OneToMany(() => Assignment, (assignment) => assignment.module)
+  @OneToMany(() => Assignment, (assignment) => assignment.module, { onDelete: 'CASCADE' })
   assignments: Assignment[];
 
 }

@@ -15,7 +15,7 @@ export class Lesson {
   @Column()
   contentType:  'text'; 
 
-  @ManyToOne(() => Modules, (module) => module.lesson)
+  @ManyToOne(() => Modules, (module) => module.lessons, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'moduleId'})
   module: Modules;
 }

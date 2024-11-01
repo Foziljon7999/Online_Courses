@@ -32,13 +32,13 @@ export class ModuleService {
   
 
   async findAll(): Promise<Modules[]> {
-    return this.moduleRepository.find({ relations: ['course', 'lessons'] });
+    return this.moduleRepository.find({ relations: [ 'course','lessons'] });
   }
 
   async findOneById(id: number): Promise<Modules> {
     const module = await this.moduleRepository.findOne({
       where: { id },
-      relations: ['course', 'lessons'],
+      relations: ['course','lessons'],
     });
     if (!module) {
       throw new NotFoundException(`Module with ID ${id} not found`);
@@ -72,7 +72,7 @@ export class ModuleService {
   async getModuleWithLessons(moduleId: number): Promise<Modules> {
     const module = await this.moduleRepository.findOne({
       where: { id: moduleId },
-      relations: ['lesson'], 
+      relations: ['lessons'], 
     });
 
     if (!module) {
